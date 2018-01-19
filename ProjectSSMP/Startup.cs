@@ -24,12 +24,12 @@ namespace ProjectSSMP
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication("FiverSecurityScheme")
+            /*services.AddAuthentication("FiverSecurityScheme")
                  .AddCookie("FiverSecurityScheme", options =>
                  {
                      options.AccessDeniedPath = new PathString("/Account/Access");
-                     options.LoginPath = new PathString("/Account/Login");
-                 });
+                     options.LoginPath = new PathString("/Security/Login");
+                 });*/
             services.AddMvc();
             var connection = @"Server=den1.mssql5.gear.host;Initial Catalog=sspm;Integrated Security=False;User ID=sspm;Password=Gi90MMTY!H_i;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddDbContext<sspmContext>(options => options.UseSqlServer(connection));
@@ -38,6 +38,8 @@ namespace ProjectSSMP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            //app.UseAuthentication();
+            //app.UseMvcWithDefaultRoute();
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -50,12 +52,12 @@ namespace ProjectSSMP
 
             app.UseStaticFiles();
 
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Home}/{action=Index}/{id?}");
-            //});
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

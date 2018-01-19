@@ -14,5 +14,6 @@ namespace ProjectSSMP.Models.UserManagement
         public DateTime? UserCreateDate { get; set; }
         public string UserEditBy { get; set; }
         public DateTime? UserEditDate { get; set; }
+        public string GroupID { get; set; }
     }
 }

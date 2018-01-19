@@ -38,14 +38,28 @@ namespace ProjectSSMP.Controllers
                 //var loggedInUser = HttpContext.User;
                 //var loggedInUserName = loggedInUser.Identity.Name;
 
+                var id = (from u in _context.RunningNumber where u.Type.Equals("UserID") select u).FirstOrDefault();
+
+                int userid;
+                if (id.Number == null)
+                {
+                    userid = 100001;
+
+                }
+                else
+                {
+                    userid = Convert.ToInt32(id.Number);
+                    userid = userid + 1;
+                }
+
                 UserSspm ord = new UserSspm
                 {
-                    UserId = "999999",
+                    UserId = userid.ToString(),
                     Username = inputModel.Username,
                     Password = inputModel.Password,
                     Firstname = inputModel.Firstname,
                     Lastname = inputModel.Lastname,
-                    //JobResponsible = inputModel.JobResponsible,
+                    JobResponsible = inputModel.JobResponsible,
                     UserCreateBy = "Test",
                     UserCreateDate = DateTime.Now,
 
@@ -53,9 +67,39 @@ namespace ProjectSSMP.Controllers
 
                 };
 
+                UserAssignGroup ord2 = new UserAssignGroup
+                {
+                    UserId = userid.ToString(),
+                    GroupId = inputModel.GroupID,
+
+                };
+
                 // Add the new object to the Orders collection.
                 _context.UserSspm.Add(ord);
                 await _context.SaveChangesAsync();
+                _context.UserAssignGroup.Add(ord2);
+                await _context.SaveChangesAsync();
+
+                var query = from num in _context.RunningNumber
+                                           where num.Type.Equals("UserID") 
+                                                select num;
+
+                foreach (RunningNumber RunUserID in query)
+                {
+                    RunUserID.Number = userid.ToString();
+
+                }
+
+                // Submit the changes to the database.
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    // Provide for exceptions.
+                }
 
                 return RedirectToAction("Index", "Home");
 

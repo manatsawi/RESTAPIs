@@ -13,10 +13,12 @@ namespace ProjectSSMP.Models
         public virtual DbSet<UserGroup> UserGroup { get; set; }
         public virtual DbSet<UserSspm> UserSspm { get; set; }
 
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             
-               //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(@"Server=den1.mssql5.gear.host;Initial Catalog=sspm;Integrated Security=False;User ID=sspm;Password=Gi90MMTY!H_i;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             
         }
@@ -56,11 +58,15 @@ namespace ProjectSSMP.Models
 
             modelBuilder.Entity<RunningNumber>(entity =>
             {
-                entity.HasKey(e => new { e.Type, e.Number });
+                entity.HasKey(e => e.Type);
 
-                entity.Property(e => e.Type).HasMaxLength(20);
+                entity.Property(e => e.Type)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
 
-                entity.Property(e => e.Number).HasMaxLength(6);
+                entity.Property(e => e.Number)
+                    .IsRequired()
+                    .HasMaxLength(6);
             });
 
             modelBuilder.Entity<UserAssignGroup>(entity =>
